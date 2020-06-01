@@ -15,6 +15,9 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import theme from './theme';
 import './types';
 import { VideoProvider } from './components/VideoProvider';
+import ClinicianPage from './components/Clinician/ClinicianPage';
+import PatientPage from './components/Patient/PatientPage';
+import LandingPage from './components/LandingPage/LandingPage';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -70,13 +73,19 @@ ReactDOM.render(
       <AppStateProvider>
         <Switch>
           <PrivateRoute exact path="/">
-            <VideoApp />
+            <LandingPage />
           </PrivateRoute>
           <PrivateRoute path="/room/:URLRoomName">
             <VideoApp />
           </PrivateRoute>
           <Route path="/login">
             <LoginPage />
+          </Route>
+          <Route path="/clinician">
+            <ClinicianPage />
+          </Route>
+          <Route path="/patient">
+            <PatientPage />
           </Route>
           <Redirect to="/" />
         </Switch>
