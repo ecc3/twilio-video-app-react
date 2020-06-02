@@ -1,4 +1,4 @@
-import { Button, TextField } from '@material-ui/core';
+import { Button, TextField, Container } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
@@ -129,39 +129,49 @@ export default function ClinicianPage() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Grid container justify="center" alignItems="flex-start" className={classes.container}>
-        <Paper className={classes.paper} elevation={6}>
+      <Container fixed>
+        <Grid container justify="center" alignItems="flex-start" className={classes.container}>
           <Grid item xs={6}>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                id="menu-name"
-                label="Name"
-                //className={classes.textField}
-                value={name}
-                onChange={handleNameChange}
-                margin="dense"
-              />
-              <Button type="submit">Create</Button>
-            </form>
-            {slots.map(s => {
-              return (
-                <div>
-                  {s.Slot} : {s.State}{' '}
-                  {s.State === 'connected' && <Button onClick={() => joinSlot(s.Slot)}>Join</Button>}
-                </div>
-              );
-            })}
+            <Paper className={classes.paper} elevation={6}>
+              <div>
+                <p>Add a slot:</p>
+                <form onSubmit={handleSubmit}>
+                  <TextField
+                    id="menu-name"
+                    label="Name"
+                    //className={classes.textField}
+                    value={name}
+                    onChange={handleNameChange}
+                    margin="dense"
+                  />
+                  <Button type="submit">Create</Button>
+                </form>
+              </div>
+              <div>
+                {slots.map(s => {
+                  return (
+                    <div>
+                      {s.Slot} : {s.State}{' '}
+                      {s.State === 'connected' && <Button onClick={() => joinSlot(s.Slot)}>Join</Button>}
+                    </div>
+                  );
+                })}
+              </div>
+            </Paper>
           </Grid>
-          {currentSlot != '' && (
-            <Grid item xs={6}>
-              <VideoProvider options={connectionOptions} onError={setError}>
-                <ErrorDialog dismissError={() => setError(null)} error={error} />
-                <ClinicianRoom slotName={currentSlot} />
-              </VideoProvider>
-            </Grid>
-          )}
-        </Paper>
-      </Grid>
+          <Grid item xs={6}>
+            <Paper className={classes.paper} elevation={6}>
+              <div>Video Goes Here</div>
+              {currentSlot != '' && (
+                <VideoProvider options={connectionOptions} onError={setError}>
+                  <ErrorDialog dismissError={() => setError(null)} error={error} />
+                  <ClinicianRoom slotName={currentSlot} />
+                </VideoProvider>
+              )}
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
     </ThemeProvider>
   );
 }
