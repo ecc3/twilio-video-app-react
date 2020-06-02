@@ -22,7 +22,7 @@ export default function Room() {
   return (
     <Container>
       <ParticipantStrip />
-      <MainParticipant />
+      {/* <MainParticipant /> */}
     </Container>
   );
 }
