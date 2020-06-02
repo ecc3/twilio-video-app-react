@@ -1,7 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { IVideoTrack } from '../../types';
 import { styled } from '@material-ui/core/styles';
 import { Track } from 'twilio-video';
+import { Button } from '@material-ui/core';
 
 const Video = styled('video')({
   width: '100%',
@@ -16,10 +17,13 @@ interface VideoTrackProps {
 }
 
 export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps) {
-  const ref = useRef<HTMLVideoElement>(null!);
+  const videoRef = useRef<HTMLVideoElement>(null!);
+  const canvasRef = useRef<HTMLCanvasElement>(null!);
+  const linkRef = useRef<HTMLAnchorElement>(null);
+  const [imgData, setImageData] = useState('');
 
   useEffect(() => {
-    const el = ref.current;
+    const el = videoRef.current;
     el.muted = true;
     if (track.setPriority && priority) {
       track.setPriority(priority);
@@ -38,5 +42,38 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   const isFrontFacing = track.mediaStreamTrack.getSettings().facingMode !== 'environment';
   const style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
 
-  return <Video ref={ref} style={style} />;
+  const snap = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    const ratio = video.videoWidth / video.videoHeight;
+    canvas.width = video.videoWidth - 100;
+    canvas.height = canvas.width / ratio;
+
+    const context = canvas.getContext('2d');
+    if (context) {
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      setImageData(canvas.toDataURL());
+    }
+  };
+
+  useEffect(() => {
+    if (imgData != '') {
+      linkRef.current?.click();
+    }
+  }, [imgData]);
+
+  return (
+    <>
+      <Video ref={videoRef} style={style} />
+      <Button onClick={snap}>Snap</Button>
+      <div style={{ display: 'none' }}>
+        <a ref={linkRef} href={imgData} download="image.png">
+          Download Image Data
+        </a>
+        <canvas ref={canvasRef}></canvas>
+      </div>
+    </>
+  );
 }
