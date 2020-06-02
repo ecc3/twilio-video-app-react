@@ -66,6 +66,17 @@ const VideoApp = () => {
   );
 };
 
+const PatientVideoApp = () => {
+  const { error, setError } = useAppState();
+
+  return (
+    <VideoProvider options={connectionOptions} onError={setError}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      <PatientPage />
+    </VideoProvider>
+  );
+};
+
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
@@ -85,7 +96,7 @@ ReactDOM.render(
             <ClinicianPage />
           </Route>
           <Route path="/patient">
-            <PatientPage />
+            <PatientVideoApp />
           </Route>
           <Redirect to="/" />
         </Switch>
