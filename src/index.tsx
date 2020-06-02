@@ -18,6 +18,7 @@ import { VideoProvider } from './components/VideoProvider';
 import ClinicianPage from './components/Clinician/ClinicianPage';
 import PatientPage from './components/Patient/PatientPage';
 import LandingPage from './components/LandingPage/LandingPage';
+import { PatientIntro } from './components/Patient/PatientIntro';
 
 // See: https://media.twiliocdn.com/sdk/js/video/releases/2.0.0/docs/global.html#ConnectOptions
 // for available connection options.
@@ -66,6 +67,17 @@ const VideoApp = () => {
   );
 };
 
+const VideoComponent = (props: any) => {
+  const { error, setError } = useAppState();
+
+  return (
+    <VideoProvider options={connectionOptions} onError={setError}>
+      <ErrorDialog dismissError={() => setError(null)} error={error} />
+      {props.children}
+    </VideoProvider>
+  );
+};
+
 ReactDOM.render(
   <MuiThemeProvider theme={theme}>
     <CssBaseline />
@@ -86,6 +98,11 @@ ReactDOM.render(
           </Route>
           <Route path="/patient">
             <PatientPage />
+          </Route>
+          <Route path="/slot/:slotId">
+            <VideoComponent>
+              <PatientIntro />
+            </VideoComponent>
           </Route>
           <Redirect to="/" />
         </Switch>
