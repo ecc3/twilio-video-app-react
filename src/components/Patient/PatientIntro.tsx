@@ -4,8 +4,8 @@ import { Button, makeStyles, createStyles, Theme } from '@material-ui/core';
 import LocalVideoPreview from '../LocalVideoPreview/LocalVideoPreview';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import { AireRoom } from '../Room/AireRoom';
-import { connect } from 'twilio-video';
-import { getPatientDetails } from '../Patient/PatientDetails';
+import { usePatientService } from '../Patient/PatientDetails';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -53,9 +53,9 @@ export const PatientIntro: React.FC = () => {
   const { slotId } = useParams();
   const [slotInfo, setSlotInfo] = React.useState<ISlotInfo>({ subjectName: '', hostName: '', token: '' });
   const roomState = useRoomState();
+  const { connect } = useVideoContext();
 
   React.useEffect(() => {
-    getPatientDetails('').then();
     fetch('https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/v2/token?slot=' + slotId)
       .then(resp => resp.json())
       .then(json =>

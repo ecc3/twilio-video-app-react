@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IAireRoomProps {
-  patientDetails?: IPatientDetails;
+  patientDetails?: IPatientDetails | null;
 }
 
 export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
@@ -93,8 +93,8 @@ export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
         <div>Name: {props.patientDetails.PatientName}</div>
         <div>Date of Birth: {props.patientDetails.DateOfBirth}</div>
         <div>Sex: {props.patientDetails.Sex}</div>
-        <div>NHS number: {props.patientDetails.NhsNumber}}</div>
-        <div>Postcode: {props.patientDetails.Postcode}}</div>
+        <div>NHS number: {props.patientDetails.NhsNumber}</div>
+        <div>Postcode: {props.patientDetails.Postcode}</div>
       </div>
     );
   };
