@@ -43,6 +43,7 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   const style = isLocal && isFrontFacing ? { transform: 'rotateY(180deg)' } : {};
 
   const snap = () => {
+    console.log('Oh snap!');
     const video = videoRef.current;
     const canvas = canvasRef.current;
 

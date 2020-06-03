@@ -1,7 +1,7 @@
-import { Button, TextField, Container } from '@material-ui/core';
+import { Button, TextField, Container, Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { createMuiTheme, makeStyles, createStyles, ThemeProvider } from '@material-ui/core/styles';
 import React, { ChangeEvent, FormEvent, useState, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { ConnectOptions } from 'twilio-video';
@@ -11,45 +11,43 @@ import { VideoProvider } from '../VideoProvider';
 import ClinicianRoom from './ClinicianRoom';
 import { response } from 'express';
 import IPatientSlot from '../../interfaces/IPatientSlot';
+import ClinicianSlot from './CinicianSlot';
 
-const useStyles = makeStyles({
-  container: {
-    height: '100vh',
-    background: '#0D122B',
-  },
-  twilioLogo: {
-    width: '55%',
-    display: 'block',
-  },
-  videoLogo: {
-    width: '25%',
-    padding: '2.4em 0 2.1em',
-  },
-  paper: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'column',
-    padding: '2em',
-    marginTop: '4em',
-    background: 'white',
-    color: 'black',
-  },
-  button: {
-    color: 'black',
-    background: 'white',
-    margin: '0.8em 0 0.7em',
-    textTransform: 'none',
-  },
-  errorMessage: {
-    color: 'red',
-    display: 'flex',
-    alignItems: 'center',
-    margin: '1em 0 0.2em',
-    '& svg': {
-      marginRight: '0.4em',
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    title: {
+      margin: 'auto',
+      textAlign: 'center',
+      fontSize: '1.2rem',
+      padding: '10px',
     },
-  },
-});
+    messageContainer: {
+      margin: 'auto',
+      width: '40%',
+      backgroundColor: '#ccc',
+      border: 'solid 1px #fff',
+      borderRadius: '5px;',
+      color: 'black',
+      textAlign: 'center',
+    },
+    formContainer: {
+      backgroundColor: '#558b2f',
+      color: 'white',
+    },
+    button: {
+      margin: '10px',
+      color: '#558b2f',
+    },
+    localPreview: {
+      margin: 'auto',
+      marginTop: '20px',
+      padding: '4px',
+      width: '40%',
+      border: 'solid 1px #fff',
+      borderRadius: '5px;',
+    },
+  })
+);
 
 const theme = createMuiTheme({
   palette: {
@@ -58,7 +56,7 @@ const theme = createMuiTheme({
 });
 
 export default function ClinicianPage() {
-  const classes = useStyles();
+  const styles = useStyles();
   const [name, setName] = useState('');
   const [slots, setSlots] = useState([] as IPatientSlot[]);
   const [currentSlot, setCurrentSlot] = useState('');
@@ -135,50 +133,47 @@ export default function ClinicianPage() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <React.Fragment>
       <Container fixed>
-        <Grid container justify="center" alignItems="flex-start" className={classes.container}>
-          <Grid item xs={6}>
-            <Paper className={classes.paper} elevation={6}>
-              <div>
-                <p>Add a slot:</p>
-                <form onSubmit={handleSubmit}>
-                  <TextField
-                    id="menu-name"
-                    label="Name"
-                    //className={classes.textField}
-                    value={name}
-                    onChange={handleNameChange}
-                    margin="dense"
-                  />
-                  <Button type="submit">Create</Button>
-                </form>
-              </div>
-              <div>
-                {slots.map(s => {
+        <div className={styles.title}>Airelogic Video Consultation</div>
+
+        <div className={styles.messageContainer}>
+          <div className={styles.formContainer}>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                id="menu-name"
+                label="Name"
+                //className={classes.textField}
+                value={name}
+                onChange={handleNameChange}
+              />
+              <Button type="submit" variant="contained" className={styles.button}>
+                Create Slot
+              </Button>
+            </form>
+          </div>
+          {/* {slots.map(s => {
                   return (
                     <div key={s.SlotId}>
                       {s.SubjectName} : {s.State}{' '}
-                      {s.State === 'connected' && <Button onClick={() => joinSlot(s.SlotId)}>Join</Button>}
+                      {s.State === 'connected' && <Button color="primary"  onClick={() => joinSlot(s.SlotId)}>Join</Button>}
                     </div>
                   );
-                })}
-              </div>
-            </Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper className={classes.paper} elevation={6}>
-              <div>Video Goes Here</div>
-              {currentSlot != '' && (
-                <VideoProvider options={connectionOptions} onError={setError}>
-                  <ErrorDialog dismissError={() => setError(null)} error={error} />
-                  <ClinicianRoom slotId={currentSlot} />
-                </VideoProvider>
-              )}
-            </Paper>
-          </Grid>
-        </Grid>
+                })} */}
+          {slots.map(s => {
+            return <ClinicianSlot slot={s} joinSlot={() => joinSlot(s.SlotId)} />;
+          })}
+        </div>
+        <div className={styles.messageContainer}>
+          <div>Video Goes Here</div>
+          {currentSlot != '' && (
+            <VideoProvider options={connectionOptions} onError={setError}>
+              <ErrorDialog dismissError={() => setError(null)} error={error} />
+              <ClinicianRoom slotId={currentSlot} />
+            </VideoProvider>
+          )}
+        </div>
       </Container>
-    </ThemeProvider>
+    </React.Fragment>
   );
 }
