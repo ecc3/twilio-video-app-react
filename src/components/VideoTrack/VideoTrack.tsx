@@ -68,13 +68,13 @@ export default function VideoTrack({ track, isLocal, priority }: VideoTrackProps
   const renderSnapButton = () => {
     if (isLocal) return;
 
-    return <Button onClick={snap}>Snap</Button>;
+    return <Button onClick={snap}>Take a snapshot</Button>;
   };
 
   return (
     <>
       <Video ref={videoRef} style={style} />
-      {}
+      {renderSnapButton()}
       <div style={{ display: 'none' }}>
         <a ref={linkRef} href={imgData} download="image.png">
           Download Image Data
