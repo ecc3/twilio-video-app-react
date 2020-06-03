@@ -65,10 +65,9 @@ export default function ClinicianPage() {
   const { error, setError } = useAppState();
 
   useEffect(() => {
+    getSlots();
     const interval = setInterval(() => {
-      fetch(`https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/slots`)
-        .then(response => response.json())
-        .then(response => setSlots(response.slots));
+      getSlots();
     }, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -78,16 +77,24 @@ export default function ClinicianPage() {
     setSlots(
       slots.concat([
         {
-          Slot: name,
+          SubjectName: name,
           State: 'creating',
+          HostName: 'Doctor',
+          SlotId: '',
         },
       ])
     );
 
-    fetch('https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/slot', {
+    fetch('https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/v2/slot', {
       method: 'POST',
-      body: JSON.stringify({ subjectName: name }),
+      body: JSON.stringify({ subjectName: name, hostName: 'Doctor' }),
     });
+  };
+
+  const getSlots = () => {
+    fetch(`https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/v2/slots`)
+      .then(response => response.json())
+      .then(response => setSlots(response.slots));
   };
 
   const connectionOptions: ConnectOptions = {
@@ -123,8 +130,8 @@ export default function ClinicianPage() {
     setName(event.target.value);
   };
 
-  const joinSlot = (slotName: string) => {
-    setCurrentSlot(slotName);
+  const joinSlot = (slotId: string) => {
+    setCurrentSlot(slotId);
   };
 
   return (
@@ -150,9 +157,9 @@ export default function ClinicianPage() {
               <div>
                 {slots.map(s => {
                   return (
-                    <div>
-                      {s.Slot} : {s.State}{' '}
-                      {s.State === 'connected' && <Button onClick={() => joinSlot(s.Slot)}>Join</Button>}
+                    <div key={s.SlotId}>
+                      {s.SubjectName} : {s.State}{' '}
+                      {s.State === 'connected' && <Button onClick={() => joinSlot(s.SlotId)}>Join</Button>}
                     </div>
                   );
                 })}
@@ -165,7 +172,7 @@ export default function ClinicianPage() {
               {currentSlot != '' && (
                 <VideoProvider options={connectionOptions} onError={setError}>
                   <ErrorDialog dismissError={() => setError(null)} error={error} />
-                  <ClinicianRoom slotName={currentSlot} />
+                  <ClinicianRoom slotId={currentSlot} />
                 </VideoProvider>
               )}
             </Paper>

@@ -18,7 +18,7 @@ export default function PatientRoom(props: IPatientRoomProps) {
   useEffect(() => {
     if (props.slotName !== '') {
       fetch(
-        `https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/token?identity=${props.slotName}&room=${props.slotName}`
+        `https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/token?identity=${props.slotName}&room=${props.slotName}1`
       )
         .then(res => res.json())
         .then(result => {

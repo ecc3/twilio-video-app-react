@@ -1,4 +1,6 @@
 export default interface IPatientSlot {
-  Slot: string;
+  SlotId: string;
+  SubjectName: string;
+  HostName: string;
   State: string;
 }

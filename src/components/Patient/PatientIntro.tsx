@@ -3,11 +3,15 @@ import { useParams } from 'react-router-dom';
 import { Button, makeStyles, createStyles, Theme } from '@material-ui/core';
 import { ArrowUp } from '@primer/octicons-react';
 import LocalVideoPreview from '../LocalVideoPreview/LocalVideoPreview';
+import { useAppState } from '../../state';
+import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
+import useRoomState from '../../hooks/useRoomState/useRoomState';
+import Room from '../Room/Room';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     title: {
-      marin: 'auto',
+      margin: 'auto',
       textAlign: 'center',
       fontSize: '1.2rem',
       padding: '10px',
@@ -49,6 +53,9 @@ export const PatientIntro: React.FC = () => {
   const styles = useStyles();
   const { slotId } = useParams();
   const [slotInfo, setSlotInfo] = React.useState<ISlotInfo>({ subjectName: '', hostName: '', token: '' });
+  const { signIn, user, isAuthReady, error, setError } = useAppState();
+  const { isConnecting, connect } = useVideoContext();
+  const roomState = useRoomState();
 
   React.useEffect(() => {
     fetch('https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/v2/token?slot=' + slotId)
@@ -57,6 +64,10 @@ export const PatientIntro: React.FC = () => {
         setSlotInfo({ subjectName: json.slotInfo.SubjectName, hostName: json.slotInfo.HostName, token: json.token })
       );
   }, []);
+
+  const connectRoom = () => {
+    connect(slotInfo.token);
+  };
 
   return (
     <React.Fragment>
@@ -73,7 +84,9 @@ export const PatientIntro: React.FC = () => {
               You've got an appointment with <b>{slotInfo.hostName}</b> today.
             </div>
             <div>
-              <Button className={styles.button}>Let's get started</Button>
+              <Button className={styles.button} onClick={connectRoom}>
+                Let's get started
+              </Button>
             </div>
             <div>
               <Button className={styles.button}>I'm not {slotInfo.subjectName}</Button>
@@ -81,9 +94,7 @@ export const PatientIntro: React.FC = () => {
           </div>
         )}
       </div>
-      <div className={styles.localPreview}>
-        <LocalVideoPreview />
-      </div>
+      <div className={styles.localPreview}>{roomState === 'disconnected' ? <LocalVideoPreview /> : <Room />}</div>
     </React.Fragment>
   );
 };

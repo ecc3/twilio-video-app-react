@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'column',
-    maxWidth: '460px',
+    //maxWidth: '460px',
     padding: '2em',
     marginTop: '4em',
     background: 'white',
