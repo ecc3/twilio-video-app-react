@@ -1,7 +1,7 @@
 import * as React from 'react';
 import useParticipants from '../../hooks/useParticipants/useParticipants';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { makeStyles, Theme, createStyles } from '@material-ui/core';
+import { makeStyles, Theme, createStyles, Button } from '@material-ui/core';
 import Participant from '../Participant/Participant';
 import ParticipantInfo from '../ParticipantInfo/ParticipantInfo';
 import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
@@ -69,10 +69,15 @@ export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
   const renderMainVideo = () => {
     if (participants.length > 0) {
       return (
-        <div className={styles.bigVideo}>
-          <ParticipantTracks participant={participants[0]} disableAudio={false} enableScreenShare={false} />
-          <div className={styles.hostName}>{participants[0].identity}</div>
-        </div>
+        <React.Fragment>
+          <Button variant="contained" onClick={() => room.disconnect()}>
+            Disconnect
+          </Button>
+          <div className={styles.bigVideo}>
+            <ParticipantTracks participant={participants[0]} disableAudio={false} enableScreenShare={false} />
+            <div className={styles.hostName}>{participants[0].identity}</div>
+          </div>
+        </React.Fragment>
       );
     } else {
       return <div className={styles.title}>We have told the doctor you've arrived. They will be with you shortly</div>;
