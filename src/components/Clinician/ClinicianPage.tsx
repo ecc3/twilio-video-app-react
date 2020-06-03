@@ -136,44 +136,34 @@ export default function ClinicianPage() {
     <React.Fragment>
       <Container fixed>
         <div className={styles.title}>Airelogic Video Consultation</div>
-
-        <div className={styles.messageContainer}>
-          <div className={styles.formContainer}>
-            <form onSubmit={handleSubmit}>
-              <TextField
-                id="menu-name"
-                label="Name"
-                //className={classes.textField}
-                value={name}
-                onChange={handleNameChange}
-              />
-              <Button type="submit" variant="contained" className={styles.button}>
-                Create Slot
-              </Button>
-            </form>
+        {currentSlot === '' && (
+          <div className={styles.messageContainer}>
+            <div className={styles.formContainer}>
+              <form onSubmit={handleSubmit}>
+                <TextField
+                  id="menu-name"
+                  label="Name"
+                  //className={classes.textField}
+                  value={name}
+                  onChange={handleNameChange}
+                />
+                <Button type="submit" variant="contained" className={styles.button}>
+                  Create Slot
+                </Button>
+              </form>
+            </div>
+            {slots.map(s => {
+              return <ClinicianSlot slot={s} joinSlot={() => joinSlot(s.SlotId)} />;
+            })}
           </div>
-          {/* {slots.map(s => {
-                  return (
-                    <div key={s.SlotId}>
-                      {s.SubjectName} : {s.State}{' '}
-                      {s.State === 'connected' && <Button color="primary"  onClick={() => joinSlot(s.SlotId)}>Join</Button>}
-                    </div>
-                  );
-                })} */}
-          {slots.map(s => {
-            return <ClinicianSlot slot={s} joinSlot={() => joinSlot(s.SlotId)} />;
-          })}
-        </div>
-        <div className={styles.messageContainer}>
-          <div>Video Goes Here</div>
-          {currentSlot != '' && (
-            <VideoProvider options={connectionOptions} onError={setError}>
-              <ErrorDialog dismissError={() => setError(null)} error={error} />
-              <ClinicianRoom slotId={currentSlot} />
-            </VideoProvider>
-          )}
-        </div>
+        )}
       </Container>
+      {currentSlot != '' && (
+        <VideoProvider options={connectionOptions} onError={setError} onDisconnect={() => setCurrentSlot('')}>
+          <ErrorDialog dismissError={() => setError(null)} error={error} />
+          <ClinicianRoom slotId={currentSlot} />
+        </VideoProvider>
+      )}
     </React.Fragment>
   );
 }

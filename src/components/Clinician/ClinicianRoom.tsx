@@ -3,12 +3,16 @@ import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import { useAppState } from '../../state';
 import LocalVideoPreview from '../LocalVideoPreview/LocalVideoPreview';
-import Room from '../Room/Room';
 import axios from 'axios';
+import { AireRoom } from '../Room/AireRoom';
+import Video, { ConnectOptions, LocalTrack } from 'twilio-video';
 
 interface IClinicianRoomProps {
   slotId: string;
 }
+
+// @ts-ignore
+window.TwilioVideo = Video;
 
 export default function ClinicianRoom(props: IClinicianRoomProps) {
   const { signIn, user, isAuthReady, error, setError } = useAppState();
@@ -25,5 +29,5 @@ export default function ClinicianRoom(props: IClinicianRoomProps) {
     }
   }, [props.slotId]);
 
-  return <div>{roomState != 'disconnected' && <Room />}</div>;
+  return <div>{roomState != 'disconnected' && <AireRoom />}</div>;
 }
