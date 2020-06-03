@@ -70,9 +70,6 @@ export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
     if (participants.length > 0) {
       return (
         <React.Fragment>
-          <Button variant="contained" onClick={() => room.disconnect()}>
-            Disconnect
-          </Button>
           <div className={styles.bigVideo}>
             <ParticipantTracks participant={participants[0]} disableAudio={false} enableScreenShare={false} />
             <div className={styles.hostName}>{participants[0].identity}</div>
@@ -102,6 +99,9 @@ export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
   return (
     <>
       <div className={styles.videoContainer}>
+        <Button variant="contained" onClick={() => room.disconnect()}>
+          Disconnect
+        </Button>
         <div>{renderMainVideo()}</div>
         <div className={styles.smallVideo}>
           <Participant participant={room.localParticipant} onClick={() => {}} isSelected={false} />

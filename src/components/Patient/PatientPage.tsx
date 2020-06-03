@@ -74,6 +74,7 @@ export default function PatientPage() {
   const [name, setName] = useState('');
   const [inSession, setInSession] = useState(false);
   const { error, setError } = useAppState();
+  const history = useHistory();
 
   const connectionOptions: ConnectOptions = {
     // Bandwidth Profile, Dominant Speaker, and Network Quality
@@ -110,7 +111,7 @@ export default function PatientPage() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setInSession(true);
+    history.replace(`/slot/${name}`);
   };
 
   return (
@@ -121,7 +122,7 @@ export default function PatientPage() {
           <form onSubmit={handleSubmit}>
             <TextField
               id="menu-name"
-              label="Name"
+              label="SlotId"
               //className={classes.textField}
               value={name}
               onChange={handleNameChange}
