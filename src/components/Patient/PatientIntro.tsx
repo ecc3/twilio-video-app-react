@@ -1,13 +1,11 @@
 import * as React from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, makeStyles, createStyles, Theme } from '@material-ui/core';
-import { ArrowUp } from '@primer/octicons-react';
 import LocalVideoPreview from '../LocalVideoPreview/LocalVideoPreview';
-import { useAppState } from '../../state';
-import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
-import Room from '../Room/Room';
 import { AireRoom } from '../Room/AireRoom';
+import { connect } from 'twilio-video';
+import { getPatientDetails } from '../Patient/PatientDetails';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -54,11 +52,10 @@ export const PatientIntro: React.FC = () => {
   const styles = useStyles();
   const { slotId } = useParams();
   const [slotInfo, setSlotInfo] = React.useState<ISlotInfo>({ subjectName: '', hostName: '', token: '' });
-  const { signIn, user, isAuthReady, error, setError } = useAppState();
-  const { isConnecting, connect } = useVideoContext();
   const roomState = useRoomState();
 
   React.useEffect(() => {
+    getPatientDetails('').then();
     fetch('https://rgqra2u25c.execute-api.eu-west-2.amazonaws.com/dev/v2/token?slot=' + slotId)
       .then(resp => resp.json())
       .then(json =>

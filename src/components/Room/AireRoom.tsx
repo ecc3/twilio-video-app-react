@@ -5,6 +5,7 @@ import { makeStyles, Theme, createStyles } from '@material-ui/core';
 import Participant from '../Participant/Participant';
 import ParticipantInfo from '../ParticipantInfo/ParticipantInfo';
 import ParticipantTracks from '../ParticipantTracks/ParticipantTracks';
+import { IPatientDetails } from '../Patient/PatientDetails';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,10 +44,24 @@ const useStyles = makeStyles((theme: Theme) =>
       right: '25px',
       border: 'solid 2px green',
     },
+    patientDetails: {
+      padding: '5px',
+      position: 'absolute',
+      width: '260px',
+      height: '400px',
+      top: '250px',
+      right: '25px',
+      border: 'solid 1px green',
+      background: '#333',
+    },
   })
 );
 
-export const AireRoom: React.FC = () => {
+interface IAireRoomProps {
+  patientDetails?: IPatientDetails;
+}
+
+export const AireRoom: React.FC<IAireRoomProps> = (props: IAireRoomProps) => {
   const styles = useStyles();
   const { room } = useVideoContext();
   const participants = useParticipants();
@@ -64,6 +79,21 @@ export const AireRoom: React.FC = () => {
     }
   };
 
+  const renderPatientDetails = () => {
+    if (!props.patientDetails) return;
+
+    return (
+      <div className={styles.patientDetails}>
+        <div>Patient Details</div>
+        <div>Name: {props.patientDetails.PatientName}</div>
+        <div>Date of Birth: {props.patientDetails.DateOfBirth}</div>
+        <div>Sex: {props.patientDetails.Sex}</div>
+        <div>NHS number: {props.patientDetails.NhsNumber}}</div>
+        <div>Postcode: {props.patientDetails.Postcode}}</div>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className={styles.videoContainer}>
@@ -71,6 +101,7 @@ export const AireRoom: React.FC = () => {
         <div className={styles.smallVideo}>
           <Participant participant={room.localParticipant} onClick={() => {}} isSelected={false} />
         </div>
+        {renderPatientDetails()}
       </div>
     </>
   );
