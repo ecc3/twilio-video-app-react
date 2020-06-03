@@ -84,7 +84,7 @@ export default function ClinicianSlot(props: IClinicianSlotProps) {
         )}
         {!['creating', 'connected'].includes(props.slot.State) && (
           <CopyToClipboard text={`${getHost()}/slot/${props.slot.SlotId}`}>
-            <Button size="small" onClick={props.joinSlot} color="secondary">
+            <Button size="small" color="secondary">
               Copy Invite
             </Button>
           </CopyToClipboard>
