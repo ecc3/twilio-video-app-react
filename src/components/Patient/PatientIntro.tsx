@@ -7,6 +7,7 @@ import { useAppState } from '../../state';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import Room from '../Room/Room';
+import { AireRoom } from '../Room/AireRoom';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -69,32 +70,51 @@ export const PatientIntro: React.FC = () => {
     connect(slotInfo.token);
   };
 
+  const renderInfo = () => {
+    if (roomState !== 'disconnected') return;
+
+    return (
+      <>
+        <div className={styles.messageContainer}>
+          {slotInfo.token == '' ? (
+            <div>Loading appointment information...</div>
+          ) : (
+            <div>
+              <div>
+                Hi <b>{slotInfo.subjectName}</b>,
+              </div>
+              <div>
+                You've got an appointment with <b>{slotInfo.hostName}</b> today.
+              </div>
+              <div>
+                <Button className={styles.button} onClick={connectRoom}>
+                  Let's get started
+                </Button>
+              </div>
+              <div>
+                <Button className={styles.button}>I'm not {slotInfo.subjectName}</Button>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className={styles.localPreview}>
+          <LocalVideoPreview />
+        </div>
+      </>
+    );
+  };
+
+  const renderRoom = () => {
+    if (roomState !== 'disconnected') return <AireRoom />;
+
+    return;
+  };
+
   return (
     <React.Fragment>
       <div className={styles.title}>Airelogic Video Consultation</div>
-      <div className={styles.messageContainer}>
-        {slotInfo.token == '' ? (
-          <div>Loading appointment information...</div>
-        ) : (
-          <div>
-            <div>
-              Hi <b>{slotInfo.subjectName}</b>,
-            </div>
-            <div>
-              You've got an appointment with <b>{slotInfo.hostName}</b> today.
-            </div>
-            <div>
-              <Button className={styles.button} onClick={connectRoom}>
-                Let's get started
-              </Button>
-            </div>
-            <div>
-              <Button className={styles.button}>I'm not {slotInfo.subjectName}</Button>
-            </div>
-          </div>
-        )}
-      </div>
-      <div className={styles.localPreview}>{roomState === 'disconnected' ? <LocalVideoPreview /> : <Room />}</div>
+      {renderInfo()}
+      {renderRoom()}
     </React.Fragment>
   );
 };
